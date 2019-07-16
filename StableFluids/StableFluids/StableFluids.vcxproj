@@ -150,12 +150,14 @@
   <ItemGroup>
     <ClCompile Include="CGLFW.cpp" />
     <ClCompile Include="CShader.cpp" />
+    <ClCompile Include="CStableFluidsFunc.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGLFW.h" />
     <ClInclude Include="CShader.h" />
+    <ClInclude Include="CStableFluidsFunc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

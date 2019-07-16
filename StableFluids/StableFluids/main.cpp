@@ -4,6 +4,7 @@
 #include <iostream>
 #include "CShader.h"
 #include "CGLFW.h"
+#include "CStableFluidsFunc.h"
 
 const float SAMPLE_SIZE = 0.02f;
 GLFW ourGlfw;
@@ -76,19 +77,50 @@ int main()
 	//Create Shader
 	//Shader ourShader("./Shader/VertexShader_uniform.glsl", "./Shader/FragmentShader_uniform.glsl", "./Shader/GeometryShader_uniform.glsl");
 	Shader ourShader("./Shader/VertexShader.glsl", "./Shader/FragmentShader.glsl");
+	StableFluidsFunc ourFunc;
 
+	ourFunc.sourcing();
 	float vertices[] =
 	{
 		0.0f, 0.5f, 0.0f, // top mid 0
 		0.5f, -0.5f, 0.0f, // bottom right 1
 		-0.5f, -0.5f, 0.0f// // bottom left 2
 	};
-	vertexCount = sizeof(vertices) / (3 * sizeof(float));
-	srcVertices = new float[vertexCount * 3];
+	//vertexCount = sizeof(vertices) / (3 * sizeof(float));
+	vertexCount = 2 * 4 * sizeof(ourFunc.dens) / (sizeof(float));
+	srcVertices = new float[vertexCount];
 
-	for (int i = 0; i < vertexCount * 3; i++)
+	float h = (float)(1.0f / (N + 2));
+
+	/*for (int i = 0; i < vertexCount; i++)
 	{
-		srcVertices[i] = vertices[i];
+		srcVertices[2 * i] = i - h/2.0f 
+	}
+*/
+	for (int j = 0; j < N + 2; j++)
+	{
+		for (int i = 0; i < N + 2; i++)
+		{
+			srcVertices[2 * 4 * IX(i, j) + 0] = i - h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 0 << "]" ;
+			srcVertices[2 * 4 * IX(i, j) + 2] = i + h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 2 << "]";
+			srcVertices[2 * 4 * IX(i, j) + 4] = i + h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 4 << "]" ;
+			srcVertices[2 * 4 * IX(i, j) + 6] = i - h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 6 << "]" ;
+
+			srcVertices[2 * 4 * IX(i, j) + 1] = j + h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 1 << "]" ;
+			srcVertices[2 * 4 * IX(i, j) + 3] = j + h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 3 << "]";
+			srcVertices[2 * 4 * IX(i, j) + 5] = j - h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 5 << "]" ;
+			srcVertices[2 * 4 * IX(i, j) + 7] = j - h / 2.0f;
+			//std::cout << "s[" << 2 * 4 * IX(i, j) + 7 << "]" << std::endl;
+
+		}
+		//srcVertices[i] = vertices[i];
 		//std::cout << "src[" << i << "]" << srcVertices[i] << std::endl;
 	}
 
@@ -99,33 +131,38 @@ int main()
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vertexCount, srcVertices, GL_STREAM_DRAW);
+	std::cout << "size : " << sizeof(vertices) << std::endl;
+	std::cout << "size : " << sizeof(float)*vertexCount << std::endl;
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	 
-	
+ 
 
 	while (!ourGlfw.getWindowShouldClose())
 	{
-		glClearColor(0.5f, 0.8f, 0.8f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		ourShader.use();
-
-		float timeValue = glfwGetTime();
-		float u = 0.0f;
-		float v = 0.0f;
+		//ourShader.setFloat("radius", SAMPLE_SIZE);
 
 		float *VBOptr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 		if (VBOptr)
 		{
-			updateVertices(VBOptr, srcVertices, vertexCount);
+			//updateVertices(VBOptr, srcVertices, vertexCount);
+			ourFunc.update(VBOptr, srcVertices);
+			//vertexCount = sizeof(srcVertices) / (2 * sizeof(float));
+			//for (int i = 0; i < vertexCount; i++)
+			//{
+			//	std::cout << "v : " << srcVertices[i] << std::endl;
+			//	//srcVertices++;
+			//}
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 			/*if (glUnmapBuffer(GL_ARRAY_BUFFER) == GL_TRUE)
 				std::cout << "!" << std::endl;*/
@@ -134,9 +171,15 @@ int main()
 		//ourShader.setFloat("radius", SAMPLE_SIZE); //geometryshader
 		//ourShader.setVec3("position", u, v, 0.0f);//use uniform
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawArrays(GL_POINTS, 0, 3);
-
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		for (int i = 0; i < N + 2; i++)
+		{
+			for (int j = 0; j < N + 2; j++)
+			{
+				glDrawArrays(GL_POINTS, 0, 2);
+			}
+		}
+		
 		ourGlfw.swapBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);

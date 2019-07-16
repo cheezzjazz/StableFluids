@@ -6,7 +6,7 @@ out VS_OUT{
 	vec3 color;
 } vs_out;
 
-uniform vec3 position;
+//uniform vec3 position;
 
 void main()
 {

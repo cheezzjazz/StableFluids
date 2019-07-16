@@ -27,12 +27,18 @@
     <ClCompile Include="CGLFW.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CStableFluidsFunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CGLFW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CStableFluidsFunc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
