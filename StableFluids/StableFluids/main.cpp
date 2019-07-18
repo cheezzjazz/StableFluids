@@ -35,7 +35,6 @@ int main()
 	loadGLADLoader();
 
 	//Create Shader
-	//Shader ourShader("./Shader/VertexShader.glsl", "./Shader/FragmentShader.glsl");
 	Shader ourShader("./Shader/VertexShader_StableFluids.glsl", "./Shader/FragmentShader.glsl");
 	StableFluidsFunc ourFunc;
 	ourFunc.sourcing();
@@ -44,18 +43,14 @@ int main()
 	float* colorArray = new float[ourFunc.SIZE];		//color
 
 	float h = (float)(2.0f / (N + 2));	//cell size
-	//float cellheight = (float)(ourGlfw.scr_height / (N + 2));
 	cellwidth = (float)(ourGlfw.scr_width / (N + 2));
-	std::cout << cellwidth << std::endl;
 	for (int j = 0; j < N + 2; j++)
 	{
 		for (int i = 0; i < N + 2; i++)
 		{
 			gridVertex[2 * IX(i, j)] = -1.0f + (h / 2.0f) + (float)(h* i);
 			gridVertex[2 * IX(i, j) + 1] = 1.0f - (h / 2.0f) - (float)(h * j);
-			//			std::cout <<"g["<<2 * IX(i, j)<<"]="<<gridVertex[2 * IX(i, j)] << " , " << "g[" << 2 * IX(i, j) + 1 << "]=" << gridVertex[2 * IX(i, j) + 1] << std::endl;
 		}
-		//		std::cout << "\n" << std::endl;
 	}
 
 	//Init colorArray 
@@ -64,9 +59,8 @@ int main()
 		colorArray[i] = ourFunc.dens[i];
 	}
 
-	unsigned int VBO, VAO, VBO2;// EBO, ;
+	unsigned int VBO, VAO, VBO2;
 	glGenBuffers(1, &VBO);
-	//glGenBuffers(1, &EBO);	//indices
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO2);	//color
 
@@ -98,8 +92,7 @@ int main()
 		float *VBOptr = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 		if (VBOptr)
 		{
-			//ourFunc.update2(VBOptr, colorArray);//test for drawing points with changing color
-			if (ourGlfw.isStart)
+			if (ourGlfw.isStart)	//press space bar to start simulation
 			{
 				ourFunc.sourcing();
 				ourFunc.addvelocity();

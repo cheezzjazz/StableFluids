@@ -3,7 +3,6 @@
 
 #define N 300
 #define IX(i, j) ((i)+(N+2)*(j))
-//#define SIZE ((N+2)*(N+2))
 #define SWAP(x0, x) {float *tmp = x0; x0 = x; x = tmp;}
 
 class StableFluidsFunc
@@ -20,7 +19,6 @@ public:
 	float* dens = new float[SIZE];
 	float* dens_prev = new float[SIZE];
 	
-	//void update(float* ptr, float* vertices, int count);
 	void update(float* ptr, float* vertices);
 	void init();
 	void sourcing();
