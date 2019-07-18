@@ -7,7 +7,8 @@ public:
 	GLFWwindow* window = nullptr;
 	unsigned int scr_width = 600;
 	unsigned int scr_height = 600;
-
+	bool isStart = false;
+	
 	int init();
 	void swapBuffers();
 	bool getKeyPressed(const int& key);

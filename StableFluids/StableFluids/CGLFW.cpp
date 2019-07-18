@@ -33,6 +33,9 @@ int GLFW::init()
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 	return 0;
 }
 
@@ -80,4 +83,6 @@ void GLFW::processInput()
 {
 	if (getKeyPressed(GLFW_KEY_ESCAPE))
 		glfwSetWindowShouldClose(window, true);
+	else if (getKeyPressed(GLFW_KEY_SPACE))
+		isStart = true;
 }

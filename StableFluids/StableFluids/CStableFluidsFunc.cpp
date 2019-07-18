@@ -6,6 +6,16 @@ StableFluidsFunc::StableFluidsFunc()
 	init();
 }
 
+StableFluidsFunc::~StableFluidsFunc()
+{
+	delete[] u;
+	delete[] v;
+	delete[] u_prev;
+	delete[] v_prev;
+	delete[] dens;
+	delete[] dens_prev;
+}
+
 void StableFluidsFunc::init()
 {
 	for (int i = 0; i < N + 2; i++)
@@ -25,25 +35,27 @@ void StableFluidsFunc::init()
 
 void StableFluidsFunc::sourcing()
 {
-	int i = N/2+1;
-	int j = N;
-	for (i = (N / 2) ; i < (N / 2) + 3; i++)
+	int i;
+	int j = N - (N / 50);
+	for (i = (N / 2) - (N / 90); i <= (N / 2) + (N / 90); i++)
 	{
-		for(j = N-2; j > N-5; j--)
-			dens[IX(i, j)] = 1.0f;
+		for (j = N - (N / 50); j >= N - 2*(N / 50); j--)
+		{
+			dens[IX(i, j)] = 2.5f;
 			//u_prev[IX(i, j)] = 3.0f;
-			v_prev[IX(i, j)] = -30.0f;
+			v_prev[IX(i, j)] = -2.0f;
+		}		
 	}
 }
 
 //like wind
 void StableFluidsFunc::addvelocity()	
 {
-	int i = N / 2 + 1;
-	int j = N-1;
-	for (i = (N / 2); i < (N / 2) + 3; i++)
+	int i;
+	int j = N- (N / 80);
+	for (i = (N / 2)- (N / 80); i <= (N / 2) + (N / 80); i++)
 	{
-		//u_prev[IX(i, j)] = -10.0f;
+		u_prev[IX(i, j)] = (i <= N/2)? -10.0f : 10.0f;
 		v_prev[IX(i, j )] = -30.0f;
 	}
 }
