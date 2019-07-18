@@ -75,3 +75,9 @@ void GLFW::terminate()
 {
 	glfwTerminate();
 }
+
+void GLFW::processInput()
+{
+	if (getKeyPressed(GLFW_KEY_ESCAPE))
+		glfwSetWindowShouldClose(window, true);
+}

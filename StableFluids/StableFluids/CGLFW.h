@@ -5,6 +5,8 @@ class GLFW
 {
 public:
 	GLFWwindow* window = nullptr;
+	unsigned int scr_width = 600;
+	unsigned int scr_height = 600;
 
 	int init();
 	void swapBuffers();
@@ -12,9 +14,8 @@ public:
 	int checkWindowcreated();
 	bool getWindowShouldClose();
 	void terminate();
+	void processInput();
 
 private:
-	unsigned int scr_width = 800;
-	unsigned int scr_height = 600;
 	const char* Window_Title = "Stable Fluids";
 };

@@ -25,14 +25,40 @@ void StableFluidsFunc::init()
 
 void StableFluidsFunc::sourcing()
 {
-	for (int i = 45; i < 55; i++)
+	int i = N/2+1;
+	int j = N;
+	for (i = (N / 2) ; i < (N / 2) + 3; i++)
 	{
-		for (int j = 45; j < 55; j++)
-		{
-			dens_prev[IX(i, j)] = 30.0f;
-			v_prev[IX(i, j)] = 3.0f;
-///			dens[IX(i, j)] = 30.0f;
-		}
+		for(j = N-2; j > N-5; j--)
+			dens[IX(i, j)] = 1.0f;
+			//u_prev[IX(i, j)] = 3.0f;
+			v_prev[IX(i, j)] = -30.0f;
+	}
+}
+
+//like wind
+void StableFluidsFunc::addvelocity()	
+{
+	int i = N / 2 + 1;
+	int j = N-1;
+	for (i = (N / 2); i < (N / 2) + 3; i++)
+	{
+		//u_prev[IX(i, j)] = -10.0f;
+		v_prev[IX(i, j )] = -30.0f;
+	}
+}
+
+void StableFluidsFunc::update2(float* ptr, float* Array)
+{
+	for (int i = 0; i < SIZE; i++)
+	{
+		if (*Array <= 0.0f)
+			*Array = 0.0f;
+		else
+			*Array -= 0.05f;
+
+		*ptr = *Array;
+		ptr++; Array++;
 	}
 }
 
@@ -43,8 +69,14 @@ void StableFluidsFunc::update(float * ptr, float * vertices)
 
 	vel_step(u, v, u_prev, v_prev);
 	dens_step(dens, dens_prev, u, v);
-	
 
+	for (int i = 0; i < SIZE; i++)
+	{
+		*vertices = dens[i];
+		*ptr = *vertices;
+		*ptr++; vertices++;
+	}
+	
 }
 
 void StableFluidsFunc::add_source(float * x, float * s)
@@ -58,7 +90,7 @@ void StableFluidsFunc::add_source(float * x, float * s)
 void StableFluidsFunc::diffuse(int b, float * x, float * x0)
 {
 	float a = dt*diff*N*N;
-
+	//float a = 1.0f;
 	for (int k = 0; k < 20; k++)
 	{
 		for (int i = 1; i <= N; i++)
@@ -109,10 +141,13 @@ void StableFluidsFunc::advect(int b, float * d, float * d0, float * u, float * v
 
 	set_bnd(b, d);
 }
-
 void StableFluidsFunc::dens_step(float * x, float * x0, float * u, float * v)
 {
-	add_source(x, x0);
+	if (isFirst)
+	{
+		add_source(x, x0);
+		isFirst = false;
+	}
 	SWAP(x0, x);
 	diffuse(0, x, x0);
 	SWAP(x0, x);
@@ -148,6 +183,7 @@ void StableFluidsFunc::project(float * u, float * v, float * p, float * div)
 	}
 
 	set_bnd(0, div);
+	set_bnd(0, p);
 
 	for (k = 0; k < 20; k++)
 	{
