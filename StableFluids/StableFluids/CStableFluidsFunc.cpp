@@ -43,7 +43,7 @@ void StableFluidsFunc::sourcing()
 		{
 			dens[IX(i, j)] = 2.5f;
 			//u_prev[IX(i, j)] = 3.0f;
-			v_prev[IX(i, j)] = -2.0f;
+			v_prev[IX(i, j)] = -1.0f;
 		}		
 	}
 }
@@ -55,8 +55,10 @@ void StableFluidsFunc::addvelocity()
 	int j = N- (N / 80);
 	for (i = (N / 2)- (N / 80); i <= (N / 2) + (N / 80); i++)
 	{
-		u_prev[IX(i, j)] = (i <= N/2)? -10.0f : 10.0f;
-		v_prev[IX(i, j )] = -30.0f;
+		//u_prev[IX(i, j)] = (i <= N/2)? -10.0f : 10.0f;
+		if (i >= ((N / 2) - (N / 90)) && i <= (N / 2) + (N / 90))
+			continue;
+		v_prev[IX(i, j )] = -5.0f;
 	}
 }
 

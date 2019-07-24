@@ -85,4 +85,6 @@ void GLFW::processInput()
 		glfwSetWindowShouldClose(window, true);
 	else if (getKeyPressed(GLFW_KEY_SPACE))
 		isStart = true;
+	else if (getKeyPressed(GLFW_KEY_ENTER))
+		bSeeding = true;
 }

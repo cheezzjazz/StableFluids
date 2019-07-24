@@ -8,6 +8,7 @@ public:
 	unsigned int scr_width = 600;
 	unsigned int scr_height = 600;
 	bool isStart = false;
+	bool bSeeding = false;
 	
 	int init();
 	void swapBuffers();

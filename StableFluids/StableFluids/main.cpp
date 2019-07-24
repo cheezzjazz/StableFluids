@@ -82,10 +82,10 @@ int main()
 	glBindVertexArray(0);
 
 	glBindVertexArray(VAO);
-//	int frame = 0;
+	int frame = 0;
 	while (!ourGlfw.getWindowShouldClose())
 	{
-//		std::cout << "\n\n" << frame++ << std::endl;
+		
 		ourGlfw.processInput();
 		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO2);
@@ -94,7 +94,16 @@ int main()
 		{
 			if (ourGlfw.isStart)	//press space bar to start simulation
 			{
-				ourFunc.sourcing();
+				std::cout << "\n\n" << frame++ << std::endl;
+				if (frame < 20 || ourGlfw.bSeeding)
+				{
+					if (frame >= 20)
+					{
+						frame = 0;
+						ourGlfw.bSeeding = false;
+					}
+					ourFunc.sourcing();
+				}
 				ourFunc.addvelocity();
 				ourFunc.update(VBOptr, colorArray);
 			}
